@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
 
-    use factorizer::Factory;
+    use factoryizer::Factory;
 
     #[derive(Factory, Default, Clone)]
     struct Point {
