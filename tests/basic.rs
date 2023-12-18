@@ -7,14 +7,33 @@ mod tests {
     struct Point {
         x: i32,
         y: i32,
+        #[skip]
+        z: i32,
+    }
+
+    #[derive(Default, Clone)]
+    struct Value(String);
+    impl Into<Value> for &str {
+        fn into(self) -> Value {
+            Value(self.to_string())
+        }
+    }
+
+    #[derive(Factory, Default, Clone)]
+    #[into]
+    struct Structure {
+        value: Value,
     }
 
     #[test]
-
     fn it_works() {
         let point = Point::new().x(1).y(2).clone();
-
         assert_eq!(point.x, 1);
         assert_eq!(point.y, 2);
+    }
+
+    #[test]
+    fn into() {
+        let structure = Structure::new().value("Hello").clone();
     }
 }
