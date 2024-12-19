@@ -29,34 +29,34 @@ pub fn fy_derive(input: TokenStream) -> TokenStream {
         quote! {
 
             impl #name {
-    
+
                 pub fn new() -> Self {
                     Self::default()
                 }
-    
+
                 #(pub fn #names<T>(&mut self, value: T) -> &mut Self
                 where T: Into<#types> {
                     self.#names = Into::into(value);
                     self
                 })*
             }
-    
+
         }
     } else {
         quote! {
 
             impl #name {
-    
+
                 pub fn new() -> Self {
                     Self::default()
                 }
-    
-                #(pub fn #names(&mut self, value: #types) -> &mut Self {
+
+                #(pub fn #names(mut self, value: #types) -> Self {
                     self.#names = value;
                     self
                 })*
             }
-    
+
         }
     };
 
