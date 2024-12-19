@@ -25,10 +25,12 @@ pub fn fy_derive(input: TokenStream) -> TokenStream {
     let names = fields.iter().map(|f| f.ident.clone());
     let types = fields.iter().map(|f| f.ty.clone());
 
+    let (i, t, w) = input.generics.split_for_impl();
+
     let implimentation = if into {
         quote! {
 
-            impl #name {
+            impl #i #name #t #w {
 
                 pub fn new() -> Self {
                     Self::default()
@@ -45,7 +47,7 @@ pub fn fy_derive(input: TokenStream) -> TokenStream {
     } else {
         quote! {
 
-            impl #name {
+            impl #i #name #t #w {
 
                 pub fn new() -> Self {
                     Self::default()
