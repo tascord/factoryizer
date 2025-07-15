@@ -12,10 +12,9 @@ fn preamble(input: DeriveInput) -> (DeriveInput, Ident, DataStruct) {
     (input, name, data)
 }
 
-#[proc_macro_derive(Factory, attributes(skip, into))]
+#[proc_macro_derive(Factory, attributes(skip))]
 pub fn fy_derive(input: TokenStream) -> TokenStream {
     let (input, name, data) = preamble(parse_macro_input!(input as DeriveInput));
-    let into = input.attrs.iter().any(|a| a.path().is_ident("into"));
     let fields = data
         .fields
         .iter()
@@ -27,39 +26,20 @@ pub fn fy_derive(input: TokenStream) -> TokenStream {
 
     let (i, t, w) = input.generics.split_for_impl();
 
-    let implimentation = if into {
-        quote! {
+    let implimentation = quote! {
 
-            impl #i #name #t #w {
+        impl #i #name #t #w {
 
-                pub fn new() -> Self {
-                    Self::default()
-                }
-
-                #(pub fn #names<T>(&mut self, value: T) -> &mut Self
-                where T: Into<#types> {
-                    self.#names = Into::into(value);
-                    self
-                })*
+            pub fn new() -> Self {
+                Self::default()
             }
 
+            #(pub fn #names(mut self, value: impl Into<#types>) -> Self {
+                self.#names = value.into();
+                self
+            })*
         }
-    } else {
-        quote! {
 
-            impl #i #name #t #w {
-
-                pub fn new() -> Self {
-                    Self::default()
-                }
-
-                #(pub fn #names(mut self, value: #types) -> Self {
-                    self.#names = value;
-                    self
-                })*
-            }
-
-        }
     };
 
     TokenStream::from(implimentation)

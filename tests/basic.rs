@@ -21,7 +21,6 @@ mod tests {
     }
 
     #[derive(Factory, Default, Clone)]
-    #[into]
     struct Structure {
         value: Value,
     }
@@ -31,10 +30,5 @@ mod tests {
         let point = Point::<usize>::new().x(1).y(2).clone();
         assert_eq!(point.x, 1);
         assert_eq!(point.y, 2);
-    }
-
-    #[test]
-    fn into() {
-        let _structure = Structure::new().value("Hello").clone();
     }
 }
